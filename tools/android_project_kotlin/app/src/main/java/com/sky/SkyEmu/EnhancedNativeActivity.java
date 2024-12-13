@@ -423,4 +423,19 @@ public class EnhancedNativeActivity extends NativeActivity {
     
     public native void se_android_load_file(String filePath);
     public native void se_android_load_rom(String filePath);
+
+    public static int openDocument(String path, String mode) {
+		try {
+			mode = FileUtils.parseNativeMode(mode);
+			Uri uri = Uri.parse(path);
+			ParcelFileDescriptor parcel;
+			parcel = this.getContentResolver().openFileDescriptor(uri, mode);
+			int fd = parcel.detachFd();
+			parcel.close();
+
+			return fd;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
