@@ -134,4 +134,16 @@ object FileUtil {
         }
         return size
     }
+
+    @JvmStatic
+    fun parseNativeMode(mode: String): String {
+        return when (mode.lowercase()) {
+            "r", "rb" -> "r"
+            "r+", "r+b", "rb+" -> "rw"
+            "w+" -> "rwt"
+            "w", "wb" -> "wt"
+            "wa" -> "wa"
+            else -> throw IllegalArgumentException("Invalid file mode: $mode")
+        }
+    }
 }
