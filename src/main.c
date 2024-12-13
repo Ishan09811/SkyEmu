@@ -2385,18 +2385,20 @@ void se_load_rom(const char *filename){
     save_file[0] = '\0';
     const char* base, *c, *ext; 
     sb_breakup_path(filename,&base, &c, &ext);
-  #if defined(EMSCRIPTEN)
-      if(sb_path_has_file_ext(filename,".sav")||sb_path_has_file_ext(filename,".code")){
-        if(strncmp(filename,gui_state.recently_loaded_games[0].path,SB_FILE_PATH_SIZE)!=0){
-          return se_load_rom(gui_state.recently_loaded_games[0].path);
+    #if defined(EMSCRIPTEN)
+        if (sb_path_has_file_ext(filename, ".sav") || sb_path_has_file_ext(filename, ".code")) {
+            if (strncmp(filename, gui_state.recently_loaded_games[0].path, SB_FILE_PATH_SIZE) != 0) {
+                return se_load_rom(gui_state.recently_loaded_games[0].path);
+            }
+            return;
         }
-        return;
-      }
-      snprintf(emu_state.save_data_base_path, SB_FILE_PATH_SIZE,"/offline/%s", c);
-  #else
-      se_join_path(emu_state.save_data_base_path, SB_FILE_PATH_SIZE, base, c, NULL);
-  #endif
-    snprintf(save_file, SB_FILE_PATH_SIZE, "%s.sav",emu_state.save_data_base_path);
+        snprintf(emu_state.save_data_base_path, SB_FILE_PATH_SIZE, "/offline/%s", c);
+    #elif defined(SE_PLATFORM_ANDROID)
+        snprintf(emu_state.save_data_base_path, SB_FILE_PATH_SIZE, "/data/data/com.sky.SkyEmu/files/%s", c);
+    #else
+        se_join_path(emu_state.save_data_base_path, SB_FILE_PATH_SIZE, base, c, NULL);
+    #endif
+        snprintf(save_file, SB_FILE_PATH_SIZE, "%s.sav",emu_state.save_data_base_path);
     if(!sb_file_exists(save_file)){
       const char* base, *c, *ext; 
       sb_breakup_path(filename,&base, &c, &ext);
