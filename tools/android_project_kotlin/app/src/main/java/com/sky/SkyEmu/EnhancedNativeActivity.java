@@ -313,7 +313,7 @@ public class EnhancedNativeActivity extends NativeActivity {
         if (extras != null) {
             Game game = extras.getParcelable("game");
             if (game != null) {
-                loadURI(Uri.parse(game.getPath()), true);
+                loadURI(game.getPath(), true);
             }
         }
     }
@@ -384,24 +384,9 @@ public class EnhancedNativeActivity extends NativeActivity {
         return false;
     }
     
-    public void loadURI(Uri selectedFileUri, boolean is_rom){
-        String filename = getFileName(selectedFileUri);
-        File file = new File(selectedFileUri.getPath());//create path from uri
-        Log.i("SkyEmu", "Selected file path: " + filename);
-
-        if (selectedFileUri != null) {
-            // Get the original file's path using its URI
-            // Copy the file to the external directory
-            String externalDirectoryPath = getFilesDir().getAbsolutePath(); // Use app private path for now
-            File copiedFile = copyFileToExternalDirectory(selectedFileUri, externalDirectoryPath, filename); // TODO: Implement SAF
-
-            if (copiedFile != null) {
-                String copiedFilePath = copiedFile.getAbsolutePath();
-                if(is_rom)se_android_load_rom(copiedFilePath);
-                se_android_load_file(copiedFilePath);
-                Log.i("SkyEmu", "Copied file path: " + copiedFilePath);
-            }
-        }
+    public void loadURI(String selectedFileUri, boolean is_rom) {  
+        if(is_rom)se_android_load_rom(selectedFileUri);
+        Log.i("SkyEmu", "Copied file path: " + copiedFilePath);
     }
     
     public void openCustomTab(String url){
@@ -425,7 +410,7 @@ public class EnhancedNativeActivity extends NativeActivity {
     }
     
     public native void se_android_load_file(String filePath);
-    public native void se_android_load_rom(String filePath);
+    public native void se_android_load_rom(String fileUri);
 
     public static int openDocument(String path, String mode) {
         try {
