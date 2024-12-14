@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -32,6 +33,8 @@ import android.widget.FrameLayout;
 import androidx.browser.customtabs.CustomTabsIntent;
 
 import com.sky.SkyEmu.models.Game;
+import com.sky.SkyEmu.SkyEmuApplication;
+import com.sky.SkyEmu.utils.FileUtil
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -425,17 +428,17 @@ public class EnhancedNativeActivity extends NativeActivity {
     public native void se_android_load_rom(String filePath);
 
     public static int openDocument(String path, String mode) {
-		try {
-			mode = FileUtils.parseNativeMode(mode);
-			Uri uri = Uri.parse(path);
-			ParcelFileDescriptor parcel;
-			parcel = this.getContentResolver().openFileDescriptor(uri, mode);
-			int fd = parcel.detachFd();
-			parcel.close();
+        try {
+	    mode = FileUtil.parseNativeMode(mode);
+	    Uri uri = Uri.parse(path);
+	    ParcelFileDescriptor parcel;
+	    parcel = SkyEmuApplication.getAppContext().getContentResolver().openFileDescriptor(uri, mode);
+	    int fd = parcel.detachFd();
+	    parcel.close();
 
-			return fd;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	    return fd;
+	} catch (Exception e) {
+	    throw new RuntimeException(e);
 	}
+    }
 }
